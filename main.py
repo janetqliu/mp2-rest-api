@@ -37,7 +37,7 @@ async def upload_dataset(file: UploadFile = File(...)):
         logger.warning(f"Cannot read CSV: {error}")
         raise HTTPException(status_code=400, detail="Cannot read the uploaded CSV")
 
-    dataset_id = storage.save_data(df, filename.name)
+    dataset_id = storage.save(df, filename.name)
     logger.info(f"Saved dataset {dataset_id}: {filename.name}, {df.shape[0]} rows")
 
     return DatasetInfo(
@@ -53,7 +53,7 @@ async def upload_dataset(file: UploadFile = File(...)):
 @app.get("/datasets/{dataset_id}")
 def get_dataset(dataset_id: int, limit: int = Query(default=100, ge=1)):
     """Return up to limit rows from a stored dataset."""
-    df = storage.get_data(dataset_id)
+    df = storage.get(dataset_id)
     if df is None:
         logger.warning(f"Dataset ID {dataset_id} not found")
         raise HTTPException(status_code=404, detail="Dataset not found")

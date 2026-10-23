@@ -1,17 +1,9 @@
 # storage.py
 
-import logging, DatasetInfo
+import logging
+from .models import DatasetInfo
 
 logger = logging.getLogger(__name__)
-
-Requirements:
-
-# Assign IDs starting at 1 and increment for each upload.
-# Store the filename and a copy of the DataFrame for each ID.
-# Return metadata matching the fields in DatasetInfo.
-# Calculate metadata from the current DataFrame so it remains accurate after processing.
-# Return copies from get() so changes do not affect storage until update() is called.
-# Log storage operations at DEBUG.
 
 
 class DatasetStorage:
