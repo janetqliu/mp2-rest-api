@@ -26,7 +26,7 @@ def health_check():
 async def upload_dataset(file: UploadFile = File(...)):
     """Read and store a CSV upload."""
 
-    filename = Path(file.filename)
+    filename = Path(file.filename or "")
     if filename.suffix.lower() != ".csv":
         logger.warning(f"File extension {filename.suffix} not accepted")
         raise HTTPException(status_code=400, detail="Must be CSV file")
@@ -94,11 +94,12 @@ def process_dataset(dataset_id: int, config: ProcessConfig):
         df_before = data.copy()
         df = validate_dataframe(data, required_columns, numeric_columns)
 
-        logger.info(f"Rows before validating: {len(df_before)} | Rows after: {len(df)}")
+        logger.info(f"Dataset {dataset_id} rows before validating: {len(df_before)} | Rows after: {len(df)}")
         df_validated = df.copy()
+        rows_removed = len(df_before) - len(df_validated)
 
         df_processed = process_data(df, process_config)
-        logger.info(f"Processing complete: {len(df_validated)} -> {len(df_processed)} rows")
+        logger.info(f"Dataset {dataset_id} pocessing complete: {len(df_validated)} -> {len(df_processed)} rows")
     
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -107,7 +108,6 @@ def process_dataset(dataset_id: int, config: ProcessConfig):
 
     storage.update(dataset_id, df_processed)
     logger.info(f"Updated dataset {dataset_id} successfully")
-    rows_removed = len(df_before) - len(df_validated)
 
     return {
         "id": dataset_id,

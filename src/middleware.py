@@ -16,7 +16,6 @@ async def log_requests(request: Request, call_next):
 
     try:
         response = await call_next(request)
-        logger.info("Successful response")
     except Exception:
         logger.error(f"Unexpected exception: request ID {request_id}", exc_info=True)
 
@@ -32,7 +31,6 @@ async def log_requests(request: Request, call_next):
         f"status={response.status_code} duration={duration_ms:.1f}ms"
     )
 
-    message = ""
     if response.status_code < 400:
         logger.info(message)
     elif response.status_code >= 400 and response.status_code < 500:

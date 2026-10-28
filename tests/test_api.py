@@ -11,7 +11,7 @@ def test_upload_csv(client, sample_csv_bytes):
 def test_process_and_retrieve(
     client, uploaded_dataset_id, processing_body
 ):
-    response = client.post(f"datasets/{uploaded_dataset_id}/process", json=processing_body)
+    response = client.post(f"/datasets/{uploaded_dataset_id}/process", json=processing_body)
 
     assert response.status_code == 200
     body = response.json()
@@ -19,7 +19,7 @@ def test_process_and_retrieve(
     assert body["cleaning_report"]["rows_before"] == 5
     assert body["cleaning_report"]["rows_after"] == 3
 
-    response2 = client.get(f"datasets/{uploaded_dataset_id}")
+    response2 = client.get(f"/datasets/{uploaded_dataset_id}")
     assert response2.status_code == 200
     body2 = response2.json()
     assert body2["total_rows"] == 3
@@ -29,7 +29,7 @@ def test_process_and_retrieve(
 
 
 def test_retrieve_missing_dataset(client):
-    response = client.get("datasets/100")
+    response = client.get("/datasets/100")
     assert response.status_code == 404
 
 def test_health_check(client):
