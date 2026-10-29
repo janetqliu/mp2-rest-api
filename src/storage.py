@@ -24,7 +24,7 @@ class DatasetStorage:
         df = self._store.get(dataset_id)
         if df is None:
             return None
-        logger.debug(f"Returned datframe {dataset_id}")
+        logger.debug(f"Returned dataframe {dataset_id}")
         return df["df"].copy()
 
     def get_metadata(self, dataset_id):
